@@ -1,0 +1,36 @@
+# Build
+build/
+
+# CMake
+CMakeUserPresets.json
+compile_commands.json
+
+# ccache
+.ccache/
+
+# clangd
+.cache/
+
+# VS Code
+.vscode/
+
+# CLion
+.idea/
+
+# macOS
+.DS_Store
+
+# Vim
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Binaries
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.exe
