@@ -28,7 +28,10 @@ check-format:
 	clang-format --dry-run --Werror $(SOURCES)
 
 tidy:
-	clang-tidy -p build/debug $(CPP_SOURCES)
+	clang-tidy \
+		-header-filter="^$(PWD)/(include|src)" \
+		-p build/debug \
+		$(CPP_SOURCES)
 
 install:
 	cmake --install build/debug

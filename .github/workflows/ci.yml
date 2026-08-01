@@ -2,14 +2,19 @@ name: C++ CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - develop
 
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - develop
 
 jobs:
 
   format:
+    name: Format
     runs-on: ubuntu-latest
 
     steps:
@@ -24,34 +29,44 @@ jobs:
         run: make check-format
 
   build:
-
+    name: Build (${{ matrix.compiler }})
     needs: format
 
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         compiler:
           - gcc
           - clang
 
     steps:
-
       - uses: actions/checkout@v4
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ccache-${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('CMakeLists.txt', 'CMakePresets.json', '**/*.cpp', '**/*.hpp') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ matrix.compiler }}-
+            ccache-${{ runner.os }}-
 
       - name: Install dependencies
         run: |
           sudo apt update
 
           sudo apt install -y \
+            build-essential \
             cmake \
             ninja-build \
             clang \
             clang-tidy \
-            ccache \
-            g++
+            clang-format \
+            ccache
 
-      - name: Select compiler
+      - name: Configure compiler
         run: |
           if [ "${{ matrix.compiler }}" = "gcc" ]; then
             echo "CC=gcc" >> $GITHUB_ENV
@@ -61,23 +76,29 @@ jobs:
             echo "CXX=clang++" >> $GITHUB_ENV
           fi
 
-      - name: Configure
+      - name: Configure ccache
         run: |
-          cmake \
-            -B build \
-            -G Ninja \
-            -DCMAKE_BUILD_TYPE=Debug
+          ccache --max-size=500M
+          ccache --zero-stats
 
-      - name: Build
-        run: |
-          cmake --build build
+      - name: Configure Debug
+        run: cmake --preset debug
+
+      - name: Build Debug
+        run: cmake --build --preset debug
 
       - name: Run clang-tidy
-        run: |
-          make tidy
+        run: make tidy
 
       - name: Run tests
+        run: make test
+
+      - name: Build Release
         run: |
-          ctest \
-            --test-dir build \
-            --output-on-failure
+          cmake --preset release
+          cmake --build --preset release
+
+      - name: Show ccache statistics
+        if: always()
+        run: |
+          ccache --show-stats
