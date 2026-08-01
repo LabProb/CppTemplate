@@ -34,3 +34,9 @@ compile_commands.json
 *.so
 *.dll
 *.exe
+
+# Coverage
+coverage*
+*.gcda
+*.gcno
+*.gcov

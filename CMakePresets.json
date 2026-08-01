@@ -25,6 +25,15 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             }
+        },
+        {
+            "name": "coverage",
+            "displayName": "Coverage",
+            "inherits": "debug",
+            "binaryDir": "${sourceDir}/build/coverage",
+            "cacheVariables": {
+                "ENABLE_COVERAGE": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -35,6 +44,10 @@
         {
             "name": "release",
             "configurePreset": "release"
+        },
+        {
+            "name": "coverage",
+            "configurePreset": "coverage"
         }
     ]
 }

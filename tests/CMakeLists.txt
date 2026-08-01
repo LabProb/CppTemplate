@@ -2,21 +2,24 @@ add_executable(
     CppTemplateTests
     main.cpp
     version_test.cpp
-     explorer_tests.cpp
+    explorer_tests.cpp
 )
 
 target_link_libraries(
     CppTemplateTests
     PRIVATE
         CppTemplate
-        GTest::gtest
         GTest::gtest_main
 )
 
-target_include_directories(
+enable_warnings(CppTemplateTests)
+enable_sanitizers(CppTemplateTests)
+enable_coverage(CppTemplateTests)
+
+target_compile_options(
     CppTemplateTests
     PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
+        $<$<CONFIG:Debug>:-g3>
 )
 
 include(GoogleTest)

@@ -1,4 +1,5 @@
-.PHONY: all debug release run test clean rebuild format check-format tidy install
+.PHONY: all debug release coverage run test clean rebuild format \
+        check-format tidy install ci
 
 SOURCES := $(shell find src include tests examples \
 	\( -name "*.cpp" -o -name "*.hpp" \))
@@ -15,11 +16,30 @@ release:
 	cmake --preset release
 	cmake --build --preset release
 
+coverage:
+	cmake --preset coverage
+	cmake --build --preset coverage
+
+	ctest \
+		--test-dir build/coverage \
+		--output-on-failure \
+		--progress
+
+	gcovr \
+		--root . \
+		--exclude tests \
+		--exclude build \
+		--html-details coverage.html \
+		--xml coverage.xml
+
 run:
 	./build/debug/CppTemplateApp
 
 test:
-	ctest --test-dir build/debug --output-on-failure --progress
+	ctest \
+		--test-dir build/debug \
+		--output-on-failure \
+		--progress
 
 format:
 	clang-format -i $(SOURCES)

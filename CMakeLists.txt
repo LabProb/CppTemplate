@@ -11,13 +11,30 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(StandardProjectSettings)
 include(CompilerWarnings)
+include(Coverage)
 include(Sanitizers)
 include(StaticAnalyzers)
 include(ProjectOptions)
 include(Dependencies)
 
 # ----------------------------------------------------------
-# Executable
+# Library
+# ----------------------------------------------------------
+
+add_library(
+    CppTemplate
+    STATIC
+        src/explorer.cpp
+)
+
+target_include_directories(
+    CppTemplate
+    PUBLIC
+        include
+)
+
+# ----------------------------------------------------------
+# Application
 # ----------------------------------------------------------
 
 add_executable(
@@ -25,12 +42,10 @@ add_executable(
     src/main.cpp
 )
 
-add_library(CppTemplate STATIC src/explorer.cpp)
-
-target_include_directories(
-    CppTemplate
-    PUBLIC
-        include
+target_link_libraries(
+    CppTemplateApp
+    PRIVATE
+        CppTemplate
 )
 
 # ----------------------------------------------------------
@@ -41,27 +56,42 @@ enable_warnings(CppTemplate)
 enable_warnings(CppTemplateApp)
 
 # ----------------------------------------------------------
+# Sanitizers
+# ----------------------------------------------------------
+
+enable_sanitizers(CppTemplate)
+enable_sanitizers(CppTemplateApp)
+
+# ----------------------------------------------------------
+# Coverage
+# ----------------------------------------------------------
+
+enable_coverage(CppTemplate)
+enable_coverage(CppTemplateApp)
+
+# ----------------------------------------------------------
 # Debug options
 # ----------------------------------------------------------
 
-target_compile_options(
+foreach(target
     CppTemplate
-    PRIVATE
-        $<$<CONFIG:Debug>:-g3>
-)
-
-target_compile_options(
     CppTemplateApp
-    PRIVATE
-        $<$<CONFIG:Debug>:-g3>
 )
+    target_compile_options(
+        ${target}
+        PRIVATE
+            $<$<CONFIG:Debug>:-g3>
+    )
+endforeach()
 
 # ----------------------------------------------------------
 # Install
 # ----------------------------------------------------------
 
 install(
-    TARGETS CppTemplate CppTemplateApp
+    TARGETS
+        CppTemplate
+        CppTemplateApp
 )
 
 # ----------------------------------------------------------
@@ -71,5 +101,3 @@ install(
 enable_testing()
 
 add_subdirectory(tests)
-
-target_link_libraries(CppTemplateApp PRIVATE CppTemplate)
