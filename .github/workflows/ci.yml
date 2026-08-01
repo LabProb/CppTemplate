@@ -1,43 +1,83 @@
-name: CMake CI
+name: C++ CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  build:
 
+  format:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Install clang-format
+        run: |
+          sudo apt update
+          sudo apt install -y clang-format
+
+      - name: Check formatting
+        run: make check-format
+
+  build:
+
+    needs: format
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        compiler:
+          - gcc
+          - clang
+
+    steps:
+
+      - uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
           sudo apt update
+
           sudo apt install -y \
             cmake \
             ninja-build \
             clang \
-            clang-tidy
+            clang-tidy \
+            ccache \
+            g++
+
+      - name: Select compiler
+        run: |
+          if [ "${{ matrix.compiler }}" = "gcc" ]; then
+            echo "CC=gcc" >> $GITHUB_ENV
+            echo "CXX=g++" >> $GITHUB_ENV
+          else
+            echo "CC=clang" >> $GITHUB_ENV
+            echo "CXX=clang++" >> $GITHUB_ENV
+          fi
 
       - name: Configure
         run: |
-          cmake -B build \
-                -G Ninja \
-                -DCMAKE_BUILD_TYPE=Debug
+          cmake \
+            -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug
 
       - name: Build
         run: |
           cmake --build build
 
+      - name: Run clang-tidy
+        run: |
+          make tidy
+
       - name: Run tests
         run: |
-          ctest --test-dir build --output-on-failure
+          ctest \
+            --test-dir build \
+            --output-on-failure
