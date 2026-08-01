@@ -3,12 +3,9 @@
 
 #include <gtest/gtest.h>
 
-TEST(Explorer, VersionStringContainsVersion)
-{
-    Explorer explorer;
+TEST(Explorer, VersionStringContainsVersion) {
+  Explorer explorer;
 
-    EXPECT_NE(
-    explorer.versionString().find(cpptemplate::Version),
-    std::string::npos
-);
+  EXPECT_NE(explorer.versionString().find(cpptemplate::Version),
+            std::string::npos);
 }
