@@ -37,3 +37,5 @@ clean:
 	rm -rf build
 
 rebuild: clean debug
+
+ci: debug check-format tidy test
