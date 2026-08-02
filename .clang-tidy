@@ -7,4 +7,6 @@ Checks: >
 
 WarningsAsErrors: ''
 
-HeaderFilterRegex: '.*'
+HeaderFilterRegex: '^include/'
+
+SystemHeaders: false

@@ -1,5 +1,18 @@
-.PHONY: all debug release coverage run test clean rebuild format \
-        check-format tidy install ci
+.PHONY: \
+	all \
+	debug \
+	release \
+	coverage \
+	sanitize \
+	run \
+	test \
+	format \
+	check-format \
+	tidy \
+	install \
+	clean \
+	rebuild \
+	ci
 
 SOURCES := $(shell find src include tests examples \
 	\( -name "*.cpp" -o -name "*.hpp" \))
@@ -7,6 +20,10 @@ SOURCES := $(shell find src include tests examples \
 CPP_SOURCES := $(shell find src tests -name "*.cpp")
 
 all: debug
+
+# ----------------------------------------------------------
+# Build
+# ----------------------------------------------------------
 
 debug:
 	cmake --preset debug
@@ -29,8 +46,22 @@ coverage:
 		--root . \
 		--exclude tests \
 		--exclude build \
+		--exclude "src/main.cpp" \
 		--html-details coverage.html \
 		--xml coverage.xml
+
+sanitize:
+	cmake --preset sanitize
+	cmake --build --preset sanitize --clean-first
+
+	ctest \
+		--test-dir build/sanitize \
+		--output-on-failure \
+		--progress
+
+# ----------------------------------------------------------
+# Run
+# ----------------------------------------------------------
 
 run:
 	./build/debug/CppTemplateApp
@@ -41,6 +72,10 @@ test:
 		--output-on-failure \
 		--progress
 
+# ----------------------------------------------------------
+# Static analysis
+# ----------------------------------------------------------
+
 format:
 	clang-format -i $(SOURCES)
 
@@ -48,13 +83,18 @@ check-format:
 	clang-format --dry-run --Werror $(SOURCES)
 
 tidy:
-	clang-tidy \
-		-header-filter="^$(PWD)/(include|src)" \
-		-p build/debug \
-		$(CPP_SOURCES)
+	cmake --build build/debug --target tidy
+
+# ----------------------------------------------------------
+# Install
+# ----------------------------------------------------------
 
 install:
 	cmake --install build/debug
+
+# ----------------------------------------------------------
+# Utilities
+# ----------------------------------------------------------
 
 clean:
 	rm -rf build

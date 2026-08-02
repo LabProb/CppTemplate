@@ -1,8 +1,8 @@
 add_executable(
     CppTemplateTests
-    main.cpp
+    main_test.cpp
     version_test.cpp
-    explorer_tests.cpp
+    explorer_test.cpp
 )
 
 target_link_libraries(

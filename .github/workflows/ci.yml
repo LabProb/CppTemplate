@@ -95,18 +95,19 @@ jobs:
       - name: Run tests
         run: make test
 
+      - name: Configure Release
+        run: cmake --preset release
+
       - name: Build Release
-        run: |
-          cmake --preset release
-          cmake --build --preset release
+        run: cmake --build --preset release
 
       - name: Show ccache statistics
         if: always()
-        run: |
-          ccache --show-stats
+        run: ccache --show-stats
 
   coverage:
-    name: Coverage
+    name: Coverage (GCC)
+
     needs: build
 
     runs-on: ubuntu-latest
@@ -131,30 +132,29 @@ jobs:
 
       - name: Configure Coverage
         run: |
-          cmake \
-            -B build \
-            -G Ninja \
-            -DCMAKE_BUILD_TYPE=Debug \
-            -DENABLE_COVERAGE=ON
+          cmake --preset coverage
 
-      - name: Build
+      - name: Build Coverage
         run: |
-          cmake --build build
+          cmake --build --preset coverage
 
       - name: Run tests
         run: |
           ctest \
-            --test-dir build \
+            --test-dir build/coverage \
             --output-on-failure
 
       - name: Generate coverage report
         run: |
           gcovr \
             --root . \
+            --filter src \
             --exclude tests \
             --exclude build \
+            --exclude "src/main.cpp" \
             --html-details coverage.html \
-            --xml coverage.xml
+            --xml coverage.xml \
+            --print-summary
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -163,3 +163,10 @@ jobs:
           path: |
             coverage.html
             coverage.xml
+
+      - name: Upload coverage build files
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-build
+          path: |
+            build/coverage/compile_commands.json

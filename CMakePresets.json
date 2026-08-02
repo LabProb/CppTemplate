@@ -34,6 +34,17 @@
             "cacheVariables": {
                 "ENABLE_COVERAGE": "ON"
             }
+        },
+        {
+            "name": "sanitize",
+            "displayName": "Sanitizers",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/sanitize",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "ENABLE_SANITIZERS": "ON"
+            }
         }
     ],
     "buildPresets": [
@@ -48,6 +59,10 @@
         {
             "name": "coverage",
             "configurePreset": "coverage"
+        },
+        {
+            "name": "sanitize",
+            "configurePreset": "sanitize"
         }
     ]
 }
