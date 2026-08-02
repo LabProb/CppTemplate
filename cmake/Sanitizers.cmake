@@ -1,23 +1,25 @@
 function(enable_sanitizers TARGET)
 
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    if(NOT ENABLE_SANITIZERS)
+        return()
+    endif()
 
-        set(SANITIZER_FLAGS
-            -fsanitize=address
-            -fsanitize=undefined
-            -fno-omit-frame-pointer
-        )
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 
         target_compile_options(
             ${TARGET}
             PRIVATE
-                $<$<CONFIG:Debug>:${SANITIZER_FLAGS}>
+                -fsanitize=address
+                -fsanitize=undefined
+                -fno-omit-frame-pointer
         )
 
         target_link_options(
             ${TARGET}
             PRIVATE
-                $<$<CONFIG:Debug>:${SANITIZER_FLAGS}>
+                -fsanitize=address
+                -fsanitize=undefined
+                -fno-omit-frame-pointer
         )
 
     endif()
