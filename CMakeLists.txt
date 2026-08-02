@@ -90,8 +90,21 @@ endforeach()
 
 install(
     TARGETS
-        CppTemplate
         CppTemplateApp
+    RUNTIME DESTINATION bin
+)
+
+install(
+    TARGETS
+        CppTemplate
+    ARCHIVE DESTINATION lib
+)
+
+install(
+    DIRECTORY
+        include/
+    DESTINATION
+        include
 )
 
 # ----------------------------------------------------------
@@ -101,3 +114,34 @@ install(
 enable_testing()
 
 add_subdirectory(tests)
+
+# ----------------------------------------------------------
+# Packaging
+# ----------------------------------------------------------
+
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+
+set(CPACK_PACKAGE_VENDOR "LabProb")
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
+    "Modern C++ project template"
+)
+
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+set(CPACK_PACKAGE_CONTACT "you@example.com")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LabProb")
+set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+#
+# set(CPACK_RESOURCE_FILE_LICENSE
+#     "${CMAKE_SOURCE_DIR}/LICENSE"
+# )
+
+set(CPACK_GENERATOR "TGZ;DEB")
+
+include(CPack)

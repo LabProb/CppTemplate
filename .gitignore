@@ -1,5 +1,10 @@
 # Build
 build/
+_CPack_Packages/
+
+# Packages
+*.tar.gz
+*.deb
 
 # CMake
 CMakeUserPresets.json
