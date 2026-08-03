@@ -3,6 +3,7 @@ add_executable(
     main_test.cpp
     version_test.cpp
     explorer_test.cpp
+    logger_test.cpp
 )
 
 target_link_libraries(
