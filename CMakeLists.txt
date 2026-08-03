@@ -25,6 +25,9 @@ add_library(
     CppTemplate
     STATIC
         src/explorer.cpp
+        src/logger/Logger.cpp
+        src/logger/ConsoleBackend.cpp
+        src/logger/SpdlogBackend.cpp
 )
 
 target_include_directories(
@@ -33,6 +36,11 @@ target_include_directories(
         include
 )
 
+target_link_libraries(
+    CppTemplate
+    PUBLIC
+        spdlog::spdlog
+)
 # ----------------------------------------------------------
 # Application
 # ----------------------------------------------------------
