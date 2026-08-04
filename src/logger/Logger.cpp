@@ -29,8 +29,10 @@ void Logger::shutdown() {
   }
 }
 
-void Logger::setLevel(LogLevel /*level*/) {
-  // За бажанням: тут можна встановити рівень сповіщень у logger_
+void Logger::setLevel(LogLevel level) {
+  if (backend_) {
+    backend_->setLevel(level);
+  }
 }
 
 void Logger::logMessage(LogLevel level, std::string_view file, int line,
