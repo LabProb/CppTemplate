@@ -10,5 +10,6 @@ auto Explorer::versionString() const -> std::string {
 
 auto Explorer::run() const -> void {
   LOG_INFO("Version: {}", versionString());
+  LOG_WARN("Version: {}", versionString());
   LOG_DEBUG("Version: {}", versionString());
 }
