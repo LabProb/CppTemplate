@@ -4,6 +4,8 @@ add_executable(
     version_test.cpp
     explorer_test.cpp
     logger_test.cpp
+    stopwatch_test.cpp
+    scoped_timer_test.cpp
 )
 
 target_link_libraries(
