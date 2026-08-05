@@ -28,6 +28,7 @@ add_library(
         src/logger/Logger.cpp
         src/logger/ConsoleBackend.cpp
         src/logger/SpdlogBackend.cpp
+        src/profiler/ScopedTimer.cpp
 )
 
 target_include_directories(
