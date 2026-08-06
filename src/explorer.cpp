@@ -1,9 +1,18 @@
 #include <CppTemplate/explorer.hpp>
 #include <CppTemplate/logger.hpp>
 #include <CppTemplate/profiler.hpp>
+#include <CppTemplate/scope.hpp>
 #include <CppTemplate/version.hpp>
 
 #include <thread>
+
+void foo() {
+  LOG_INFO("begin");
+
+  DEFER(LOG_INFO("cleanup"));
+
+  LOG_INFO("work");
+}
 
 auto Explorer::versionString() const -> std::string {
   return currentPath_ + " " + cpptemplate::Version;
@@ -40,4 +49,5 @@ auto Explorer::run() const -> void {
   LOG_INFO("Stopwatch: {} ms", sw.elapsedMilliseconds());
   LOG_INFO("Stopwatch: {:.3f} s", sw.elapsedSeconds());
   sw.stop();
+  foo();
 }
