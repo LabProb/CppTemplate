@@ -6,48 +6,50 @@
 
 #include <thread>
 
-void foo() {
-  LOG_INFO("begin");
+void foo()
+{
+    LOG_INFO("begin");
 
-  DEFER(LOG_INFO("cleanup"));
+    DEFER(LOG_INFO("cleanup"));
 
-  LOG_INFO("work");
+    LOG_INFO("work");
 }
 
-auto Explorer::versionString() const -> std::string {
-  return currentPath_ + " " + cpptemplate::Version;
+auto Explorer::versionString() const -> std::string
+{
+    return currentPath_ + " " + cpptemplate::Version;
 }
 
-auto Explorer::run() const -> void {
-  SCOPED_FUNCTION_TIMER();
+auto Explorer::run() const -> void
+{
+    SCOPED_FUNCTION_TIMER();
 
-  CppTemplate::Stopwatch sw;
+    CppTemplate::Stopwatch sw;
 
-  sw.start();
+    sw.start();
 
-  sw.start();
-  std::this_thread::sleep_for(std::chrono::milliseconds(20));
-  sw.stop();
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    sw.stop();
 
-  LOG_INFO("{} ms", sw.elapsedMilliseconds());
+    LOG_INFO("{} ms", sw.elapsedMilliseconds());
 
-  sw.start();
-  std::this_thread::sleep_for(std::chrono::milliseconds(30));
-  sw.stop();
+    sw.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    sw.stop();
 
-  sw.reset();
-  sw.start();
-  LOG_INFO("{} ms", sw.elapsedMilliseconds());
+    sw.reset();
+    sw.start();
+    LOG_INFO("{} ms", sw.elapsedMilliseconds());
 
-  LOG_INFO("Version: {}", versionString());
-  LOG_WARN("Version: {}", versionString());
-  LOG_DEBUG("Version: {}", versionString());
+    LOG_INFO("Version: {}", versionString());
+    LOG_WARN("Version: {}", versionString());
+    LOG_DEBUG("Version: {}", versionString());
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-  LOG_INFO("Stopwatch: {} us", sw.elapsedMicroseconds());
-  LOG_INFO("Stopwatch: {} ms", sw.elapsedMilliseconds());
-  LOG_INFO("Stopwatch: {:.3f} s", sw.elapsedSeconds());
-  sw.stop();
-  foo();
+    LOG_INFO("Stopwatch: {} us", sw.elapsedMicroseconds());
+    LOG_INFO("Stopwatch: {} ms", sw.elapsedMilliseconds());
+    LOG_INFO("Stopwatch: {:.3f} s", sw.elapsedSeconds());
+    sw.stop();
+    foo();
 }
