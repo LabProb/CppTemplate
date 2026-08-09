@@ -45,3 +45,7 @@ coverage*
 *.gcda
 *.gcno
 *.gcov
+
+# Core dumps
+core
+core.*
