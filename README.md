@@ -1,31 +1,28 @@
-Requirements
+# CppTemplate
 
-Docker
+## Requirements
 
-Build
+- CMake 3.20 or newer
+- A C++20 compiler
+- Ninja
 
-make build
+## Build and run
 
-Start
-
-make start
-
-Shell
-
-make shell
-
-Debug build
-
+```sh
 make debug
-
-Release build
-
-make release
-
-Run
-
 make run
+```
 
-Clean
+## Other commands
 
+```sh
+make release
+make test
+make coverage
+make sanitize
+make format
+make check-format
+make tidy
+make install
 make clean
+```

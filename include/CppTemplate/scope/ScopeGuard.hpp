@@ -16,14 +16,18 @@ public:
     ~ScopeGuard() noexcept
     {
         if (active_) {
-            function_();
+            try {
+                function_();
+            } catch (...) {
+                // Destructors must not throw during stack unwinding.
+            }
         }
     }
 
     ScopeGuard(const ScopeGuard&) = delete;
     ScopeGuard& operator=(const ScopeGuard&) = delete;
 
-    ScopeGuard(ScopeGuard&& other) noexcept
+    ScopeGuard(ScopeGuard&& other) noexcept(std::is_nothrow_move_constructible_v<F>)
         : function_(std::move(other.function_))
         , active_(other.active_)
     {

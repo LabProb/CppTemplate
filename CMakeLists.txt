@@ -123,7 +123,13 @@ install(
 
 enable_testing()
 
-add_subdirectory(tests)
+if(ENABLE_TESTS)
+    add_subdirectory(tests)
+endif()
+
+if(ENABLE_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
 # ----------------------------------------------------------
 # Packaging

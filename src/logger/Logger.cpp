@@ -1,11 +1,11 @@
 // Logger.cpp
-#include <CppTemplate/logger/ConsoleBackend.hpp>
 #include <CppTemplate/logger/Logger.hpp>
 #include <CppTemplate/logger/SpdlogBackend.hpp>
 
 namespace CppTemplate {
 
 std::unique_ptr<Backend> Logger::backend_ = nullptr;
+std::mutex Logger::backendMutex_;
 
 void Logger::init()
 {
@@ -14,18 +14,17 @@ void Logger::init()
 
 void Logger::init(const LoggerConfig& config)
 {
-    // (Re)initialize the backend. In practice, call shutdown() first to reset
-    // state.
+    std::lock_guard lock(backendMutex_);
+
     backend_.reset();
-    // Use the config to create a SpdlogBackend (or other) instance
-    // For example:
     backend_ = std::make_unique<SpdlogBackend>(config);
-    // Set the initial log level:
     backend_->setLevel(config.level);
 }
 
 void Logger::shutdown()
 {
+    std::lock_guard lock(backendMutex_);
+
     if (backend_) {
         backend_->flush();
         backend_.reset();
@@ -34,6 +33,8 @@ void Logger::shutdown()
 
 void Logger::setLevel(LogLevel level)
 {
+    std::lock_guard lock(backendMutex_);
+
     if (backend_) {
         backend_->setLevel(level);
     }
@@ -46,14 +47,12 @@ void Logger::logMessage(
     std::string_view function,
     std::string_view message)
 {
+    std::lock_guard lock(backendMutex_);
+
     if (!backend_) {
-        // Auto-init with defaults if not already inited:
-        init();
+        backend_ = std::make_unique<SpdlogBackend>(LoggerConfig{});
     }
-    // Forward to backend sink:
     backend_->log(level, file, line, function, message);
-    // If immediate flush on each message is desired (could be in config):
-    // backend_->flush();  // or inside the backend implementation as shown below.
 }
 
 } // namespace CppTemplate
