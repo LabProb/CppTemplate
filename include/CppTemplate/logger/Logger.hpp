@@ -5,6 +5,7 @@
 
 #include <format>
 #include <memory>
+#include <mutex>
 #include <string_view>
 
 namespace CppTemplate {
@@ -41,6 +42,7 @@ private:
         std::string_view message);
 
     static std::unique_ptr<Backend> backend_;
+    static std::mutex backendMutex_;
 };
 
 } // namespace CppTemplate

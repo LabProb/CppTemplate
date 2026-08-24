@@ -4,6 +4,7 @@
 #include <spdlog/logger.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/stdout_sinks.h>
 
 #include <vector>
 
@@ -45,7 +46,11 @@ SpdlogBackend::SpdlogBackend(const LoggerConfig& cfg)
     // Console
     //
     if (cfg.console) {
-        sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+        if (cfg.color) {
+            sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+        } else {
+            sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+        }
     }
 
     //
@@ -58,7 +63,9 @@ SpdlogBackend::SpdlogBackend(const LoggerConfig& cfg)
 
     logger_ = std::make_shared<spdlog::logger>("CppTemplate", sinks.begin(), sinks.end());
 
-    logger_->set_pattern(cfg.pattern);
+    logger_->set_pattern(
+        cfg.pattern,
+        cfg.utc_time ? spdlog::pattern_time_type::utc : spdlog::pattern_time_type::local);
 
     logger_->set_level(toSpdlogLevel(cfg.level));
 

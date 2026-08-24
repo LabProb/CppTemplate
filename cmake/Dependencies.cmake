@@ -1,17 +1,19 @@
 include(FetchContent)
 
-# ----------------------------------------------------------
-# GoogleTest
-# ----------------------------------------------------------
+if(ENABLE_TESTS)
+    # ----------------------------------------------------------
+    # GoogleTest
+    # ----------------------------------------------------------
 
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-set(BUILD_GMOCK ON CACHE BOOL "" FORCE)
+    set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+    set(BUILD_GMOCK ON CACHE BOOL "" FORCE)
 
-FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-)
+    FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
+endif()
 
 # ----------------------------------------------------------
 # spdlog
@@ -27,7 +29,8 @@ FetchContent_Declare(
 # Download dependencies
 # ----------------------------------------------------------
 
-FetchContent_MakeAvailable(
-    googletest
-    spdlog
-)
+FetchContent_MakeAvailable(spdlog)
+
+if(ENABLE_TESTS)
+    FetchContent_MakeAvailable(googletest)
+endif()
